@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <title>Tip Calc v2</title>
+</head>
+
+<style>
+
+    body {
+        background-color: rgb(217, 221, 217);
+    }
+
+    .main {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        padding-top: 60px;
+    }
+
+    .main > div {
+        padding-right: 120px;
+    }
+
+    .output, .input-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .output > div {
+        padding-top: 20px;
+    }
+
+    .input-container > div {
+        padding-top: 8px;
+    }
+
+    .input-with-buttons {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+    }
+
+    input {
+        text-align: center;
+    }
+
+    .display > span {
+        float: right;
+        padding-right: 5px;
+        padding-left: 20px;
+    }
+
+    .refresh {
+        text-align: center;
+    }
+
+    
+</style>
+
+<body>
+    <main class="main">
+        
+      
+        <div class="input left-side">
+        
+            <div class="input-container">
+                    <span class="label">Bill Amount</span>
+                    <div class="input-with-buttons">
+                    <button>-</button>
+                    <input 
+                        id="input-bill" 
+                        type="number"
+                        placeholder="100">
+                    <button>+</button>
+                    </div>
+            
+                <div class="input-container">
+                    <span class="label">Tip %</span>
+                    <div class="input-with-buttons">
+                    <button>-</button>
+                    <input 
+                        id="input-tip" 
+                        type="number" 
+                        name="tip-percent" 
+                        placeholder="15">
+                    <button>+</button>
+                    </div>
+                </div>
+
+                <div class="input-container">
+                    <span class="label">Tip Dollar</span>
+                    <div class="input-with-buttons">
+                    <button>-</button>
+                    <input 
+                        id="input-tip-dollar" 
+                        type="number" 
+                        name="tip-dollar" 
+                        placeholder="$10">
+                    <button>+</button>
+                    </div>
+                </div>
+            
+                <div class="input-container">
+                    <span class="label">Number of People</span>
+                    <div class="input-with-buttons">
+                    <button>-</button>
+                    <input 
+                        id="input-people" 
+                        type="number" 
+                        placeholder="1">
+                    <button>+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="output right-side">
+            <div class="display">Total: <span id="display-total"></span></div>
+            <div class="display">Tip %: <span id="display-tip-percent"></span></div>
+            <div class="display">Tip: <span id="display-tip"></span></div>
+            <div class="display"">Each: <span id="display-each"></span></div>
+          </div>
+
+
+
+
+      </main>
+      <br><br>
+    
+      <a class="refresh" href="javascript:history.go(0)">Click to refresh the page</a>
+
+
+    <script>
+
+        const inputBill = document.getElementById('input-bill')
+        const inputTip = document.getElementById('input-tip')
+        const inputPeople = document.getElementById('input-people')
+        const inputTipDollar = document.getElementById('input-tip-dollar')
+
+        const displayTip = document.getElementById("display-tip")
+        const displayTotal = document.getElementById("display-total")
+        const displayEach = document.getElementById("display-each")
+        const displayTipPercent = document.getElementById('display-tip-percent')
+
+        inputBill.addEventListener('input', handleBill)
+        inputTip.addEventListener('input', handleBill2)
+        inputPeople.addEventListener('input', handleBill3)
+        inputTipDollar.addEventListener('input', handleBill4)
+
+        let bill = 100
+        let tipPercent = 0
+        let people = 1
+        let tipDollar = NaN
+
+        function handleBill(e) {
+            // const bill = parseInt(inputBill.value) // parseInt to get the number only and not a string
+            const newBill = parseFloat(e.target.value)
+
+            if (!isNaN(newBill)) {
+                bill = newBill
+            } else {
+                e.target.value = bill
+            }
+
+            calculateTip()
+        }
+
+        function handleBill2(e) {
+            const newTip = parseFloat(e.target.value)
+
+            if (!isNaN(newTip)) {
+                tipPercent = newTip
+            } else {
+                e.target.value = tipPercent
+            }
+
+            calculateTip()
+        }
+
+        function handleBill3(e) {
+            const newPeople = parseFloat(e.target.value)
+
+            if (!isNaN(newPeople)) {
+                people = newPeople
+            } else {
+                e.target.value = people
+            }
+
+            calculateTip()
+        }
+
+        function handleBill4(e) {
+            const newTipDollar = parseFloat(e.target.value)
+
+            if (!isNaN(newTipDollar)) {
+                tipDollar = newTipDollar
+            } else {
+                e.target.value = tipDollar
+            }
+
+            calculateTip()
+        }
+
+        function calculateTip() {
+
+            if (tipDollar) {
+                const tipPercentage = tipDollar / bill * 100
+                displayTipPercent.innerHTML = tipPercentage.toFixed(1)
+                tipPercent = tipPercentage
+            }
+
+            const tip = bill * tipPercent / 100
+            const total = bill + tip
+            const perPerson = total / people
+
+            displayTipPercent.innerHTML = tipPercent.toFixed(0)
+
+            displayTip.innerHTML = "$" + tip.toFixed(2)
+            displayTotal.innerHTML = "$" + total.toFixed(2)
+            displayEach.innerHTML = "$" + perPerson.toFixed(2)
+            }
+
+    </script>
+    
+</body>
+</html>
